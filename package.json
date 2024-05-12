@@ -1,7 +1,11 @@
 {
   "name": "llm-distillery",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Use LLMs to run map-reduce summarization tasks on large documents until a target token size is met.",
+  "repository": {
+		"type": "git",
+		"url": "https://github.com/jparkerweb/llm-distillery"
+	},
   "main": "llm-distillery.js",
   "type": "module",
   "scripts": {
