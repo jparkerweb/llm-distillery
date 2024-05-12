@@ -4,8 +4,8 @@ import fs from 'fs';
 const text = await fs.promises.readFile('./example.txt', 'utf8');
 const llmDistilleryOptions = {
     targetTokenSize: 700,
-    // baseUrl: "https://api.together.xyz/v1",
-    // apiKey: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    baseUrl: "https://api.together.xyz/v1",
+    apiKey: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     llmModel: "Llama-3-70b",
     stopTokens: ["<|eot_id|>"],
     maxDistillationLoops: 10,
