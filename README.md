@@ -35,10 +35,12 @@ import { llmDistillery } from 'llm-distillery';
 
 const text = "Your long text here...";
 const options = {
-    targetTokenSize: 2048, // adjust as needed
+    targetTokenSize: 2048,                          // adjust as needed
     baseUrl: "<openai-api-compatible-url-endpoint>" // example: https://api.together.xyz/v1
     apiKey: "<your_llm_api_key>",
-    logging: true // set to true for verbose logging
+    llmModel = "<llm_model>",                       // example: meta-llama/Llama-3-70b-chat-hf (Llama 3 model name on together.ai)
+    stopTokens = ["<|eot_id|>"],                    // stop tokens for Llama 3
+    logging: true                                   // set to true for verbose logging
 };
 
 llmDistillery(text, options)
@@ -46,7 +48,7 @@ llmDistillery(text, options)
     .catch(error => console.error(error));
 ```
 
-### Options
+### Options Object Parameters
 - `targetTokenSize`: Desired token size limit for distilled text. (default: `2048`)
 - `baseUrl`: The base URL for the OpenAI API compatible endpoint. (default: `"https://api.together.xyz/v1"`)
 - `apiKey`: Your API key for accessing LLM endpoint.
@@ -73,5 +75,5 @@ llmDistillery(text, options)
 | Xenova/bert-base-multilingual-uncased        |
 | Xenova/xlm-roberta-base                      |
 | BAAI/bge-base-en-v1.5                        |
-
+  
 NOTE 🚨 The initial run of `llm-distillery` might take a moment as the Tokenizer Model will be downloaded and saved to this package's cache directory.
