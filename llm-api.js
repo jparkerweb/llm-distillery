@@ -1,8 +1,8 @@
-// import environment variables from .env file
-import dotenv from 'dotenv';
-dotenv.config();
-
-const LLM_TEMPERATURE = parseFloat(process.env.LLM_TEMPERATURE);
+// ----------------------
+// -- import variables --
+// ----------------------
+import { llmDistilleryVars } from './vars.js';
+const LLM_TEMPERATURE = parseFloat(llmDistilleryVars.LLM_TEMPERATURE);
 
 // ---------------------------
 // -- Import the OpenAI API --

@@ -9,10 +9,9 @@
 // -----------------
 // -- import libs --
 // -----------------
-import dotenv from 'dotenv';
-dotenv.config();
-const LLM_SYSTEM_PROMPT = process.env.LLM_SYSTEM_PROMPT;
-const DEFAULT_TOKENIZER_MODEL = process.env.DEFAULT_TOKENIZER_MODEL;
+import { llmDistilleryVars } from './vars.js';
+const LLM_SYSTEM_PROMPT = llmDistilleryVars.LLM_SYSTEM_PROMPT;
+const DEFAULT_TOKENIZER_MODEL = llmDistilleryVars.DEFAULT_TOKENIZER_MODEL;
 import { chunkit } from 'semantic-chunking';
 import { getTokenSize } from './get-token-size.js';
 import { fetchChatCompletion } from './llm-api.js';
