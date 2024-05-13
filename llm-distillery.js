@@ -15,6 +15,7 @@ const DEFAULT_TOKENIZER_MODEL = llmDistilleryVars.DEFAULT_TOKENIZER_MODEL;
 import { chunkit } from 'semantic-chunking';
 import { getTokenSize } from './get-token-size.js';
 import { fetchChatCompletion } from './llm-api.js';
+import { asciiArtLogo } from './logo.js';
 
 
 // --------------------------------------------------
