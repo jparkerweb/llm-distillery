@@ -38,8 +38,8 @@ const options = {
     targetTokenSize: 2048,                          // adjust as needed
     baseUrl: "<openai-api-compatible-url-endpoint>" // example: https://api.together.xyz/v1
     apiKey: "<your_llm_api_key>",
-    llmModel = "<llm_model>",                       // example: meta-llama/Llama-3-70b-chat-hf (Llama 3 model name on together.ai)
-    stopTokens = ["<|eot_id|>"],                    // stop tokens for Llama 3
+    llmModel: "<llm_model>",                        // example: meta-llama/Llama-3-70b-chat-hf (Llama 3 model name on together.ai)
+    stopTokens: ["<|eot_id|>"],                     // stop tokens for Llama 3
     logging: true                                   // set to true for verbose logging
 };
 
