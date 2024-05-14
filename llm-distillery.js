@@ -126,6 +126,17 @@ export async function llmDistillery(
         }
 
         compressionLoop += 1;
+        compressionLoop += 100;
+    }
+
+    if (tokenSize > targetTokenSize && tokenSize < 1024) {
+        const targetWords = calculateWordsFromTokens(targetTokenSize);
+        const prompt = JSON.stringify([{ role: "system", content: `For the following your reponse must be ${targetWords} words or less.${LLM_SYSTEM_PROMPT}\n${processedText}`}]);
+        processedText = await fetchChatCompletion(prompt, baseUrl, apiKey, llmModel, stopTokens, llmMaxGenLength);
+        if (logging) {
+            const finalForcedToeknSize = await getTokenSize(text, tokenizerModel, logging);
+            console.log(`final forced token size ${finalForcedToeknSize}`);
+        }
     }
 
     if (processedText === '') {
@@ -135,3 +146,10 @@ export async function llmDistillery(
     }
 }
 
+
+// --------------------------------------
+// -- number of words from token count --
+// --------------------------------------
+function calculateWordsFromTokens(tokenCount) {
+    return Math.floor(tokenCount / 0.85);
+}
