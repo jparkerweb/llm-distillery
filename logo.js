@@ -10,7 +10,7 @@ export async function asciiArtLogo() {
   | --- |    | |_ | |_ |     |   | | || |<_-<  | |  | || || |/ ._>| '_>| | |
   |_____|    |___||___||_|_|_|   |___/|_|/__/  |_|  |_||_||_|\\___.|_|  \`_. |
                                                                        <___'
-  ------------  https://github.com/jparkerweb/llm-distillery  --------------
+  v1.0.8 ---------  https://github.com/jparkerweb/llm-distillery  ----------
 
   `;
   console.log(logo);
