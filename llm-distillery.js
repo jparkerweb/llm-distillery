@@ -159,6 +159,7 @@ export async function llmDistillery(
         }
         if (logging) {
             const finalForcedToeknSize = await getTokenSize(processedText, tokenizerModel, false);
+            console.log(`requested target token size ${targetTokenSize}`)
             console.log(`final forced token size ${finalForcedToeknSize}`);
         }
     }
@@ -175,5 +176,5 @@ export async function llmDistillery(
 // -- number of words from token count --
 // --------------------------------------
 function calculateWordsFromTokens(tokenCount) {
-    return Math.floor(tokenCount / 0.85);
+    return Math.floor(tokenCount / 1.45);
 }
