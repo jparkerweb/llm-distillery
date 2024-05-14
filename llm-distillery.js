@@ -133,7 +133,7 @@ export async function llmDistillery(
         const prompt = JSON.stringify([{ role: "system", content: `For the following your reponse must be ${targetWords} words or less.${LLM_SYSTEM_PROMPT}\n${processedText}`}]);
         processedText = await fetchChatCompletion(prompt, baseUrl, apiKey, llmModel, stopTokens, llmMaxGenLength);
         if (logging) {
-            const finalForcedToeknSize = await getTokenSize(text, tokenizerModel, logging);
+            const finalForcedToeknSize = await getTokenSize(processedText, tokenizerModel, logging);
             console.log(`final forced token size ${finalForcedToeknSize}`);
         }
     }
