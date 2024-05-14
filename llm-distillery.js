@@ -126,7 +126,6 @@ export async function llmDistillery(
         }
 
         compressionLoop += 1;
-        compressionLoop += 100;
     }
 
     if (tokenSize > targetTokenSize && tokenSize < 1024) {
