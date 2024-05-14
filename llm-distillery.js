@@ -42,10 +42,15 @@ export async function llmDistillery(
     let processedText = '';
     let isUnderTokenLimit = false;
     let compressionLoop = 0;
-    let tokenSize = await getTokenSize(text, tokenizerModel, logging);
+    let tokenSize = await getTokenSize(text, tokenizerModel, false);
+    let originalLength = text.length;
     let originaiTokenSize = tokenSize;
+    let chunkingTokenSize = (llmMaxGenLength - (LLM_SYSTEM_PROMPT.length * 1.5));
 
-    if (logging) { console.log(`initial token size ${tokenSize}`); }
+    if (logging) {
+        console.log(`target token size ${targetTokenSize}`);
+        console.log(`initial token size ${tokenSize}`);
+    }
 
     if (tokenSize <= targetTokenSize) { isUnderTokenLimit = true; }
 
@@ -58,7 +63,7 @@ export async function llmDistillery(
 
         const chunkitOptions = {
             logging: false,
-            maxTokenSize: targetTokenSize,
+            maxTokenSize: chunkingTokenSize,
             similarityThreshold: chunkingThreshold, // higher value requires higher similarity to be included (less inclusive)
             dynamicThresholdLowerBound: .1,         // lower bound for dynamic threshold
             dynamicThresholdUpperBound: .9,         // upper bound for dynamic threshold
@@ -81,8 +86,14 @@ export async function llmDistillery(
             // Parse the stop tokens
             if (typeof stopTokens === 'string') { stopTokens = JSON.parse(stopTokens); }
 
-            // Log the chunk length
-            if (logging) { console.log(`------------------------\noriginal chunk length ${chunk.length}`); }
+            // Log the chunk length and token size
+            if (logging) {
+                const chunkTokenSize = await getTokenSize(chunk, tokenizerModel, false);
+                console.log(`------------------------`);
+                console.log(`chunk ${(chunks.indexOf(chunk) + 1)} of ${chunks.length}`);
+                console.log(`chunk token size ${chunkTokenSize}`);
+                console.log(`chunk length ${chunk.length}`);
+            }
 
             // Fetch the completion from the LLM
             let summary = await fetchChatCompletion(prompt, baseUrl, apiKey, llmModel, stopTokens, llmMaxGenLength);
@@ -96,7 +107,10 @@ export async function llmDistillery(
 
             // Log the summary length
             if (logging) {
+                const summaryTokenSize = await getTokenSize(summary, tokenizerModel, false);
+                console.log(`summary token size ${summaryTokenSize}`);
                 console.log(`summary length ${summary.length}`);
+                console.log(`percentage of original chunk token size ${(summaryTokenSize / chunkingTokenSize * 100).toFixed(2)}%`);
                 console.log(`percentage of original chunk length ${(summary.length / chunk.length * 100).toFixed(2)}%`);
             }
             
@@ -105,7 +119,7 @@ export async function llmDistillery(
         }
 
         processedText = summaries.join(' ');
-        tokenSize = await getTokenSize(processedText, tokenizerModel, logging);
+        tokenSize = await getTokenSize(processedText, tokenizerModel, false);
         if (tokenSize <= targetTokenSize) { isUnderTokenLimit = true; }
         if (logging) {
             if (!isUnderTokenLimit) {
@@ -114,8 +128,12 @@ export async function llmDistillery(
             } else {
                 console.log(`========================`);
                 console.log(`original token size ${originaiTokenSize}`)
+                console.log(`original length ${originalLength}`);
                 console.log(`final token size ${tokenSize}`);
+                console.log(`final token length ${processedText.length}`);
                 console.log(`percentage of original token size ${(tokenSize / originaiTokenSize * 100).toFixed(2)}%`);
+                console.log(`percentage of original token length ${(processedText.length / originalLength * 100).toFixed(2)}%`);
+                console.log(`========================`);
             }
         }
 
@@ -128,12 +146,19 @@ export async function llmDistillery(
         compressionLoop += 1;
     }
 
+    // If the final token size is still over the target token size, force the response to be the target token size
     if (tokenSize > targetTokenSize && tokenSize < 1024) {
         const targetWords = calculateWordsFromTokens(targetTokenSize);
-        const prompt = JSON.stringify([{ role: "system", content: `For the following your reponse must be ${targetWords} words or less.${LLM_SYSTEM_PROMPT}\n${processedText}`}]);
-        processedText = await fetchChatCompletion(prompt, baseUrl, apiKey, llmModel, stopTokens, llmMaxGenLength);
+        const prompt = JSON.stringify([{ role: "system", content: `Your reponse must be ${targetWords} words or less, no exceptions! ${LLM_SYSTEM_PROMPT}\n${processedText}`}]);
+        const summary = await fetchChatCompletion(prompt, baseUrl, apiKey, llmModel, stopTokens, llmMaxGenLength);
+        try {
+            let parsed = JSON.parse(summary);
+            processedText = parsed.summary || "";
+        } catch (error) {
+            processedText = "";
+        }
         if (logging) {
-            const finalForcedToeknSize = await getTokenSize(processedText, tokenizerModel, logging);
+            const finalForcedToeknSize = await getTokenSize(processedText, tokenizerModel, false);
             console.log(`final forced token size ${finalForcedToeknSize}`);
         }
     }
