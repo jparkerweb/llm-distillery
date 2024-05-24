@@ -11,6 +11,7 @@ const llmDistilleryOptions = {
     maxDistillationLoops: 10,
     tokenizerModel: "Xenova/bert-base-uncased",
     chunkingThreshold: .175,
+    llmContextLength: 8192,
     llmMaxGenLength: 2048,
     llmApiRateLimit: 500,
     logging: true,
