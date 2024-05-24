@@ -32,6 +32,7 @@ export async function llmDistillery(
             maxDistillationLoops = 5,
             tokenizerModel = DEFAULT_TOKENIZER_MODEL,
             chunkingThreshold = .25,
+            llmContextLength=4096,
             llmMaxGenLength=2048,
             llmApiRateLimit=500,
             logging = false,
@@ -45,7 +46,7 @@ export async function llmDistillery(
     let tokenSize = await getTokenSize(text, tokenizerModel, false);
     let originalLength = text.length;
     let originaiTokenSize = tokenSize;
-    let chunkingTokenSize = (llmMaxGenLength - (LLM_SYSTEM_PROMPT.length * 1.5));
+    let chunkingTokenSize = (llmContextLength - (LLM_SYSTEM_PROMPT.length * 1.5));
 
     if (logging) {
         console.log(`target token size ${targetTokenSize}`);

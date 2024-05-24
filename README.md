@@ -57,6 +57,7 @@ llmDistillery(text, options)
 - `maxDistillationLoops`: Maximum number of iterations while running distillation (default: `5`)
 - `tokenizerModel`: Tokenizer model used to calculate token sizes. (See table below for options; default `"Xenova/paraphrase-multilingual-MiniLM-L12-v2"`)
 - `chunkingThreshold`: Threshold for segmenting text into chunks for summarization and distillation. Can be a number between 0 and 1. A lower number will result in greater distillation for each iteration, and will be faster. (default `.25`)
+- `llmContextLength`: Context length for the large language model (LLM) you are using. It denotes the maximum number of tokens the LLM can accept when generating chunk summaries. (default `4096`, but most LLM's have larger default windows. Llama 3's context window is 8k),
 - `llmMaxGenLength`: Maximum generation length for the large language model (LLM) you are using. It denotes the maximum number of tokens the LLM can generate in a single response. (default `2048`),
 - `llmApiRateLimit`: Delay in milliseconds between API calls to your chosen LLM provider. This helps to manage the rate at which requests are sent, ensuring that your application does not overload the service or exceed usage policies. (default `500`; set to 0 to disable)
 - `logging`: Enable logging to monitor the various stages of distillation, compression percentages of the original text, etc. (default `false`)
