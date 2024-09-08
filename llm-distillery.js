@@ -11,6 +11,7 @@
 // -----------------
 import { llmDistilleryVars } from './vars.js';
 const LLM_SYSTEM_PROMPT = llmDistilleryVars.LLM_SYSTEM_PROMPT;
+const LLM_USER_PROMPT = llmDistilleryVars.LLM_USER_PROMPT;
 const DEFAULT_TOKENIZER_MODEL = llmDistilleryVars.DEFAULT_TOKENIZER_MODEL;
 import { chunkit } from 'semantic-chunking';
 import { getTokenSize } from './get-token-size.js';
@@ -79,7 +80,12 @@ export async function llmDistillery(
 
         for (const chunk of chunks) {
             // Add the system prompt to the chunk
-            const prompt = JSON.stringify([{ role: "system", content: `${LLM_SYSTEM_PROMPT}\n${chunk}`}]);
+            const prompt = JSON.stringify(
+                [
+                    { role: "system", content: `${LLM_SYSTEM_PROMPT}\n` },
+                    { role: "user", content: `${LLM_USER_PROMPT}\n${chunk}`},
+                    { role: "assistant", content: "" }
+                ]);
 
             // wait for the rate limit delay before making the request
             await new Promise(resolve => setTimeout(resolve, llmApiRateLimit));
@@ -150,7 +156,11 @@ export async function llmDistillery(
     // If the final token size is still over the target token size, force the response to be the target token size
     if (tokenSize > targetTokenSize && tokenSize < 1024) {
         const targetWords = calculateWordsFromTokens(targetTokenSize);
-        const prompt = JSON.stringify([{ role: "system", content: `Your reponse must be ${targetWords} words or less, no exceptions! ${LLM_SYSTEM_PROMPT}\n${processedText}`}]);
+        const prompt = JSON.stringify([
+            { role: "system", content: `Your reponse must be ${targetWords} words or less, no exceptions! ${LLM_SYSTEM_PROMPT}\n` },
+            { role: "user", content: `${LLM_USER_PROMPT}\n${processedText}` },
+            { role: "assistant", content: "" }
+        ]);
         const summary = await fetchChatCompletion(prompt, baseUrl, apiKey, llmModel, stopTokens, llmMaxGenLength);
         try {
             let parsed = JSON.parse(summary);
