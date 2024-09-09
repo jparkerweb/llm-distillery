@@ -1,0 +1,9 @@
+# Add directories to ignore during indexing
+.git/
+.vscode/
+modules/
+node_modules/
+
+# Add file patterns to ignore during indexing
+.gitignore
+package-lock.json
