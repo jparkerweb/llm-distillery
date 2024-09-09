@@ -14,10 +14,19 @@
 // The logging is set to true, which means that the distillation process will log to the console.   
 // ---------------------------------------------------------------------------------------------------------
 
-import { llmDistillery } from "../llm-distillery.js"; // this is typically just "import { llmDistillery } from 'llm-distillery';", but this is a local test
+import { llmDistillery } from "../llm-distillery.js";
 import fs from 'fs';
+import { fileURLToPath } from 'url';
+import path from 'path';
 
-const text = await fs.promises.readFile('./example.txt', 'utf8'); // the text to distill
+// Get the directory of the current module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Construct the path to example.txt relative to the current script
+const examplePath = path.join(__dirname, 'example.txt');
+const text = await fs.promises.readFile(examplePath, 'utf8');
+
 const llmDistilleryOptions = {
     targetTokenSize: 1000,                                   // the target token size for the distilled text
     baseUrl: "https://api.together.xyz/v1",                  // the base URL for your openAI-compatible API

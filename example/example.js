@@ -26,6 +26,9 @@ const llmDistilleryOptions = {
     stopTokens: ["<|eot_id|>","<|eom_id|>"],                 // the stop tokens to use for distillation
     maxDistillationLoops: 10,                                // the maximum number of distillation loops to perform
     tokenizerModel: "Xenova/bert-base-uncased",              // the tokenizer model to use for chunking
+    semanticEmbeddingModel: "Xenova/paraphrase-multilingual-MiniLM-L12-v2", // the semantic embedding model to use for chunking
+    semanticEmbeddingModelQuantized: true,                   // whether to use the quantized semantic embedding model
+    modelCacheDir: "models",                                 // the directory to cache the models in    
     useChunkingThreshold: true,                              // whether to use the chunking threshold for chunking
     chunkingThreshold: .2,                                   // the chunking threshold to use for chunking
     llmContextLength: 8000,                                  // the context length to use for the model

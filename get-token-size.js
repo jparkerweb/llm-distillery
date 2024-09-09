@@ -8,14 +8,23 @@
 // -----------------
 // -- import libs --
 // -----------------
-import { AutoTokenizer } from '@xenova/transformers';
+import { env, AutoTokenizer } from '@xenova/transformers';
 import { tokenizerModels } from './tokenizer-models.js';
 
 
 // --------------------------
 // -- get total token size --
 // --------------------------
-export async function getTokenSize(text, onnxModel, logging = false) {
+export async function getTokenSize(text, onnxModel, modelCacheDir, logging = false) {
+    // --------------------------
+    // -- set model variables --
+    // --------------------------
+    if (modelCacheDir) {    
+        env.localModelPath = modelCacheDir; // local model path
+        env.cacheDir = modelCacheDir;       // downloaded model cache directory
+    }
+    env.allowRemoteModels = true;       // allow remote models (required for models to be be downloaded)
+
     // find the tokenizer model in the list
     const model = tokenizerModels.find(m => m.model_name === onnxModel);
     if (!model) {
