@@ -14,7 +14,7 @@ import { chunkit, cramit } from 'semantic-chunking';
 import { getTokenSize } from './get-token-size.js';
 import { fetchChatCompletion } from './llm-api.js';
 
-const { LLM_SYSTEM_PROMPT, LLM_USER_PROMPT, DEFAULT_TOKENIZER_MODEL, DEFAULT_SEMANTIC_EMBEDDING_MODEL, DEFAULT_SEMANTIC_EMBEDDING_MODEL_QUANTIZED } = llmDistilleryVars;
+const { LLM_SYSTEM_PROMPT, LLM_USER_PROMPT, DEFAULT_TOKENIZER_MODEL, DEFAULT_SEMANTIC_EMBEDDING_MODEL, DEFAULT_SEMANTIC_EMBEDDING_MODEL_QUANTIZED, DEFAULT_MODEL_CACHE_DIR } = llmDistilleryVars;
 
 // --------------------------------------------------
 // -- llmDistillery: distill text into target size --
@@ -31,7 +31,7 @@ export async function llmDistillery(
         tokenizerModel = DEFAULT_TOKENIZER_MODEL,
         semanticEmbeddingModel = DEFAULT_SEMANTIC_EMBEDDING_MODEL,
         semanticEmbeddingModelQuantized = DEFAULT_SEMANTIC_EMBEDDING_MODEL_QUANTIZED,
-        modelCacheDir = null,
+        modelCacheDir = DEFAULT_MODEL_CACHE_DIR,
         useChunkingThreshold = true,
         chunkingThreshold = .25,
         llmContextLength = 4096,

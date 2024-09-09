@@ -56,6 +56,9 @@ llmDistillery(text, options)
 - `stopTokens`: Array representing stopping tokens for LLM responses based on your chosen model. (default `["<|eot_id|>"]`)
 - `maxDistillationLoops`: Maximum number of iterations while running distillation (default: `5`)
 - `tokenizerModel`: Tokenizer model used to calculate token sizes. (See table below for options; default `"Xenova/paraphrase-multilingual-MiniLM-L12-v2"`)
+- `semanticEmbeddingModel`: Semantic embedding model used to calculate text similarity. (See https://github.com/jparkerweb/semantic-chunking?tab=readme-ov-file#curated-onnx-embedding-models for options; default `"Xenova/paraphrase-multilingual-MiniLM-L12-v2"`)
+- `semanticEmbeddingModelQuantized`: Whether to use the quantized version of the embedding model. (default `true`)
+- `modelCacheDir`: Directory to cache models in. (default `null`; set to a string for a custom cache dir, example: `"models/"`)
 - `chunkingThreshold`: Threshold for segmenting text into chunks for summarization and distillation. Can be a number between 0 and 1. A lower number will result in greater distillation for each iteration, and will be faster. (default `.25`)
 - `llmContextLength`: Context length for the large language model (LLM) you are using. It denotes the maximum number of tokens the LLM can accept when generating chunk summaries. (default `4096`, but most LLM's have larger default windows. Llama 3's context window is 8k),
 - `llmMaxGenLength`: Maximum generation length for the large language model (LLM) you are using. It denotes the maximum number of tokens the LLM can generate in a single response. (default `2048`),
