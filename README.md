@@ -81,3 +81,9 @@ llmDistillery(text, options)
 | BAAI/bge-base-en-v1.5                        |
   
 NOTE 🚨 The initial run of `llm-distillery` might take a moment as the Tokenizer Model will be downloaded and saved to this package's cache directory.
+
+---
+
+## Appreciation
+If you enjoy this plugin please consider sending me a tip to support my work 😀
+### [🍵 tip me here](https://ko-fi.com/jparkerweb)
