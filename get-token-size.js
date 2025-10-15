@@ -8,7 +8,7 @@
 // -----------------
 // -- import libs --
 // -----------------
-import { env, AutoTokenizer } from '@xenova/transformers';
+import { env, AutoTokenizer } from '@huggingface/transformers';
 import { tokenizerModels } from './tokenizer-models.js';
 
 

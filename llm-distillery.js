@@ -14,7 +14,7 @@ import { chunkit, cramit } from 'semantic-chunking';
 import { getTokenSize } from './get-token-size.js';
 import { fetchChatCompletion } from './llm-api.js';
 
-const { LLM_SYSTEM_PROMPT, LLM_USER_PROMPT, DEFAULT_TOKENIZER_MODEL, DEFAULT_SEMANTIC_EMBEDDING_MODEL, DEFAULT_SEMANTIC_EMBEDDING_MODEL_QUANTIZED, DEFAULT_MODEL_CACHE_DIR } = llmDistilleryVars;
+const { LLM_SYSTEM_PROMPT, LLM_USER_PROMPT, LLM_USER_PROMPT_SUFFIX, DEFAULT_TOKENIZER_MODEL, DEFAULT_SEMANTIC_EMBEDDING_MODEL, DEFAULT_SEMANTIC_EMBEDDING_MODEL_QUANTIZED, DEFAULT_MODEL_CACHE_DIR } = llmDistilleryVars;
 
 // --------------------------------------------------
 // -- llmDistillery: distill text into target size --
@@ -40,7 +40,7 @@ export async function llmDistillery(
         logging = false,
     } = {}
 ) {
-    let currentText = text;
+    let currentText = [{ document_text: text }];
     let processedText = '';
     let tokenSize = await getTokenSize(text, tokenizerModel, modelCacheDir, false);
     const originalLength = text.length;
@@ -72,35 +72,45 @@ export async function llmDistillery(
             onnxEmbeddingModelQuantized: semanticEmbeddingModelQuantized,
         };
 
+        console.log('awaiting chunkit');
         const chunks = await (useChunkingThreshold ? chunkit : cramit)(currentText, chunkitOptions);
+        console.log('chunks received');
         const summaries = [];
 
         for (const chunk of chunks) {
+            console.log('awaiting prompt');
             const prompt = JSON.stringify([
                 { role: "system", content: `${LLM_SYSTEM_PROMPT}\n` },
-                { role: "user", content: `${LLM_USER_PROMPT}\n${chunk}` },
+                { role: "user", content: `${LLM_USER_PROMPT}\n${chunk.text}${LLM_USER_PROMPT_SUFFIX}` },
                 { role: "assistant", content: "" }
             ]);
 
             await new Promise(resolve => setTimeout(resolve, llmApiRateLimit));
-            
+            console.log('prompt received');
             if (typeof stopTokens === 'string') stopTokens = JSON.parse(stopTokens);
 
             if (logging) {
-                const chunkTokenSize = await getTokenSize(chunk, tokenizerModel, modelCacheDir, false);
+                const chunkTokenSize = await getTokenSize(chunk.text, tokenizerModel, modelCacheDir, false);
                 console.log(`------------------------`);
                 console.log(`chunk ${chunks.indexOf(chunk) + 1} of ${chunks.length}`);
                 console.log(`chunk token size ${chunkTokenSize}`);
-                console.log(`chunk length ${chunk.length}`);
+                console.log(`chunk length ${chunk.text.length}`);
+                // show 1st 100 characters of chunk
+                console.log(`chunk first 100 characters: ${chunk.text.substring(0, 100)}`);
             }
 
             let summary = await fetchChatCompletion(prompt, baseUrl, apiKey, llmModel, stopTokens, llmMaxGenLength);
+            
+            // Clean up response to ensure valid JSON format
+            summary = summary.replace(/^[\s\S]*?(\{[\s]*"summary"[\s]*:[\s]*"[^"]*"[\s]*\})[\s\S]*$/, '$1');
             if (logging) console.log(`summary response: ${summary}`);
             
             try {
                 summary = JSON.parse(summary)?.summary || "";
             } catch (error) {
-                summary = "";
+                // try replacing the last ")" in summary with a "}" and try JSON.parse   again
+                summary = summary.replace(/\)$/, '}');
+                summary = JSON.parse(summary)?.summary || "";
             }
 
             if (logging) {
@@ -108,7 +118,7 @@ export async function llmDistillery(
                 console.log(`summary token size ${summaryTokenSize}`);
                 console.log(`summary length ${summary.length}`);
                 console.log(`percentage of original chunk token size ${(summaryTokenSize / chunkingTokenSize * 100).toFixed(2)}%`);
-                console.log(`percentage of original chunk length ${(summary.length / chunk.length * 100).toFixed(2)}%`);
+                console.log(`percentage of original chunk length ${(summary.length / chunk.text.length * 100).toFixed(2)}%`);
             }
             
             summaries.push(summary);
@@ -132,7 +142,8 @@ export async function llmDistillery(
             }
         }
 
-        currentText = processedText;
+        // Wrap processed text back into document object format for next iteration
+        currentText = [{ document_text: processedText }];
     }
 
     if (tokenSize > targetTokenSize && tokenSize < 1024) {

@@ -18,10 +18,14 @@ import { llmDistillery } from "../llm-distillery.js";
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import path from 'path';
+import dotenv from 'dotenv';
 
 // Get the directory of the current module
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Load environment variables from .env file in the example directory
+dotenv.config({ path: path.join(__dirname, '.env') });
 
 // Construct the path to example.txt relative to the current script
 const examplePath = path.join(__dirname, 'example.txt');
@@ -29,8 +33,8 @@ const text = await fs.promises.readFile(examplePath, 'utf8');
 
 const llmDistilleryOptions = {
     targetTokenSize: 1000,                                   // the target token size for the distilled text
-    baseUrl: "https://api.together.xyz/v1",                  // the base URL for your openAI-compatible API
-    apiKey: "xxxxxxxxxxxxxxxxxxxxxxxxxxxx",                  // your API key
+    baseUrl: process.env.BASE_URL,                           // the base URL for your openAI-compatible API
+    apiKey: process.env.API_KEY,                             // your API key
     llmModel: "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo", // the model to use for distillation
     stopTokens: ["<|eot_id|>","<|eom_id|>"],                 // the stop tokens to use for distillation
     maxDistillationLoops: 10,                                // the maximum number of distillation loops to perform

@@ -53,7 +53,7 @@ llmDistillery(text, options)
 - `baseUrl`: The base URL for the OpenAI API compatible endpoint. (default: `"https://api.together.xyz/v1"`)
 - `apiKey`: Your API key for accessing LLM endpoint.
 - `llmModel`: The model identifier of the LLM for your chosen endpoint. (default: `"meta-llama/Llama-3-70b-chat-hf"` on together.ai)
-- `stopTokens`: Array representing stopping tokens for LLM responses based on your chosen model. (default `["<|eot_id|>"]`)
+- `stopTokens`: Array representing stopping tokens for LLM responses based on your chosen model. (default `["<|eot_id|>"]`) May not be needed for all models.
 - `maxDistillationLoops`: Maximum number of iterations while running distillation (default: `5`)
 - `tokenizerModel`: Tokenizer model used to calculate token sizes. (See table below for options; default `"Xenova/paraphrase-multilingual-MiniLM-L12-v2"`)
 - `semanticEmbeddingModel`: Semantic embedding model used to calculate text similarity. (See https://github.com/jparkerweb/semantic-chunking?tab=readme-ov-file#curated-onnx-embedding-models for options; default `"Xenova/paraphrase-multilingual-MiniLM-L12-v2"`)

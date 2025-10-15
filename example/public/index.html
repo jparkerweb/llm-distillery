@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍶 LLM Distillery Playground</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🍶 LLM Distillery Playground</h1>
+            <p class="subtitle">Test and configure parameters for text distillation</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Status Messages -->
+            <div id="statusMessage" class="status-message"></div>
+
+            <!-- Input Section -->
+            <section class="section">
+                <h2>Input Text</h2>
+                <textarea
+                    id="inputText"
+                    placeholder="Paste your text here to distill..."
+                    rows="8"
+                ></textarea>
+                <div class="file-upload">
+                    <label for="fileUpload" class="btn-secondary">
+                        📁 Upload Text File
+                        <input type="file" id="fileUpload" accept=".txt" hidden>
+                    </label>
+                    <span id="fileName" class="file-name"></span>
+                </div>
+            </section>
+
+            <!-- Configuration Section -->
+            <section class="section">
+                <h2>Configuration</h2>
+
+                <!-- Basic Settings -->
+                <div class="form-group">
+                    <label for="targetTokenSize">Target Token Size</label>
+                    <input type="number" id="targetTokenSize" value="2048" min="1">
+                    <small>Desired token size limit for distilled text</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="baseUrl">Base URL</label>
+                    <input type="text" id="baseUrl" value="https://api.together.xyz/v1" placeholder="OpenAI-compatible API endpoint">
+                    <small>The base URL for the OpenAI API compatible endpoint</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="apiKey">API Key</label>
+                    <input type="password" id="apiKey" placeholder="Your API key">
+                    <small>Your API key for accessing the LLM endpoint</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="llmModel">LLM Model</label>
+                    <input type="text" id="llmModel" value="meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo" placeholder="Model identifier">
+                    <small>The model identifier for your chosen endpoint</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="stopTokens">Stop Tokens (JSON Array)</label>
+                    <input type="text" id="stopTokens" value='["<|eot_id|>","<|eom_id|>"]' placeholder='["token1", "token2"]'>
+                    <small>Array of stopping tokens for LLM responses</small>
+                </div>
+
+                <!-- Advanced Settings (Collapsible) -->
+                <div class="advanced-section">
+                    <button type="button" class="btn-toggle" id="advancedToggle">
+                        <span class="toggle-icon">▶</span> Advanced Options
+                    </button>
+                    <div class="advanced-content" id="advancedContent">
+                        <div class="form-group">
+                            <label for="maxDistillationLoops">Max Distillation Loops</label>
+                            <input type="number" id="maxDistillationLoops" value="5" min="1">
+                            <small>Maximum number of iterations while running distillation</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tokenizerModel">Tokenizer Model</label>
+                            <select id="tokenizerModel">
+                                <option value="Xenova/paraphrase-multilingual-MiniLM-L12-v2" selected>Xenova/paraphrase-multilingual-MiniLM-L12-v2</option>
+                                <option value="Xenova/all-MiniLM-L6-v2">Xenova/all-MiniLM-L6-v2</option>
+                                <option value="Xenova/bert-base-uncased">Xenova/bert-base-uncased</option>
+                                <option value="Xenova/gpt2">Xenova/gpt2</option>
+                                <option value="Xenova/roberta-base">Xenova/roberta-base</option>
+                                <option value="Xenova/all-distilroberta-v1">Xenova/all-distilroberta-v1</option>
+                                <option value="Xenova/multilingual-e5-large">Xenova/multilingual-e5-large</option>
+                                <option value="Xenova/bert-base-multilingual-uncased">Xenova/bert-base-multilingual-uncased</option>
+                                <option value="Xenova/xlm-roberta-base">Xenova/xlm-roberta-base</option>
+                                <option value="BAAI/bge-base-en-v1.5">BAAI/bge-base-en-v1.5</option>
+                            </select>
+                            <small>Tokenizer model used to calculate token sizes</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="semanticEmbeddingModel">Semantic Embedding Model</label>
+                            <select id="semanticEmbeddingModel">
+                                <option value="Xenova/paraphrase-multilingual-MiniLM-L12-v2" selected>Xenova/paraphrase-multilingual-MiniLM-L12-v2</option>
+                                <option value="Xenova/all-MiniLM-L6-v2">Xenova/all-MiniLM-L6-v2</option>
+                                <option value="nomic-ai/nomic-embed-text-v1.5">nomic-ai/nomic-embed-text-v1.5</option>
+                                <option value="Xenova/all-distilroberta-v1">Xenova/all-distilroberta-v1</option>
+                                <option value="Xenova/multilingual-e5-large">Xenova/multilingual-e5-large</option>
+                                <option value="Xenova/multilingual-e5-small">Xenova/multilingual-e5-small</option>
+                                <option value="BAAI/bge-base-en-v1.5">BAAI/bge-base-en-v1.5</option>
+                                <option value="BAAI/bge-small-en-v1.5">BAAI/bge-small-en-v1.5</option>
+                                <option value="thenlper/gte-small">thenlper/gte-small</option>
+                                <option value="thenlper/gte-base">thenlper/gte-base</option>
+                            </select>
+                            <small>Semantic embedding model used to calculate text similarity</small>
+                        </div>
+
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="semanticEmbeddingModelQuantized" checked>
+                                Use Quantized Embedding Model
+                            </label>
+                            <small>Whether to use the quantized version of the embedding model</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="modelCacheDir">Model Cache Directory</label>
+                            <input type="text" id="modelCacheDir" placeholder="Leave empty for default or enter path like 'models/'">
+                            <small>Directory to cache models in (optional)</small>
+                        </div>
+
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="useChunkingThreshold" checked>
+                                Use Chunking Threshold
+                            </label>
+                            <small>Enable semantic similarity-based chunking (slower but more accurate)</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="chunkingThreshold">Chunking Threshold</label>
+                            <input type="number" id="chunkingThreshold" value="0.25" min="0" max="1" step="0.01">
+                            <small>Threshold for segmenting text into chunks (0-1, lower = greater distillation)</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="llmContextLength">LLM Context Length</label>
+                            <input type="number" id="llmContextLength" value="4096" min="1">
+                            <small>Maximum number of tokens the LLM can accept</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="llmMaxGenLength">LLM Max Generation Length</label>
+                            <input type="number" id="llmMaxGenLength" value="2048" min="1">
+                            <small>Maximum number of tokens the LLM can generate</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="llmApiRateLimit">API Rate Limit (ms)</label>
+                            <input type="number" id="llmApiRateLimit" value="500" min="0">
+                            <small>Delay between API calls (set to 0 to disable)</small>
+                        </div>
+
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="logging">
+                                Enable Logging
+                            </label>
+                            <small>Enable verbose logging to monitor distillation stages</small>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section class="section results-section" id="resultsSection" style="display: none;">
+                <h2>Results</h2>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Original Tokens:</span>
+                        <span class="stat-value" id="originalTokens">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Distilled Tokens:</span>
+                        <span class="stat-value" id="distilledTokens">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Compression:</span>
+                        <span class="stat-value" id="compressionPercent">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Processing Time:</span>
+                        <span class="stat-value" id="processingTime">-</span>
+                    </div>
+                </div>
+                <div class="result-text">
+                    <h3>Distilled Text</h3>
+                    <div id="distilledText" class="text-output"></div>
+                    <button id="copyResultBtn" class="btn-secondary btn-small">📋 Copy Result</button>
+                </div>
+            </section>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="actions">
+            <button id="distillBtn" class="btn-primary">🍶 Distill Text</button>
+            <button id="exportBtn" class="btn-secondary">📤 Export Configuration</button>
+        </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div id="exportModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Export Configuration</h2>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h3>How to Use in Your App</h3>
+                <p class="usage-summary">
+                    Install the library via npm and use the following configuration in your Node.js application.
+                    Make sure to replace the API key with your actual key and adjust parameters as needed.
+                </p>
+
+                <h3>Installation</h3>
+                <div class="code-block">
+                    <pre><code>npm install llm-distillery</code></pre>
+                    <button class="copy-btn" data-copy="install">📋 Copy</button>
+                </div>
+
+                <h3>Configuration</h3>
+                <div class="code-block">
+                    <pre><code id="exportCode"></code></pre>
+                    <button class="copy-btn" data-copy="code">📋 Copy</button>
+                </div>
+
+                <h3>Current Parameters</h3>
+                <div id="exportParams" class="params-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
