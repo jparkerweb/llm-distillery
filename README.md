@@ -84,6 +84,21 @@ NOTE 🚨 The initial run of `llm-distillery` might take a moment as the Tokeniz
 
 ---
 
+## Examples
+
+The `example/` directory contains additional resources to help you get started:
+
+- **Example Scripts**: See `example.js` and `example2.js` for different configuration examples
+- **Web Playground**: An interactive web UI to test parameters and visualize results
+  - Install dependencies: `cd example && npm install`
+  - Run server: `node server.js`
+  - Visit http://localhost:3000/
+  - Features live distillation, configuration export, and code generation
+
+Visit the [example directory](https://github.com/jparkerweb/llm-distillery/tree/main/example) on GitHub for more details.
+
+---
+
 ## Appreciation
 If you enjoy this plugin please consider sending me a tip to support my work 😀
 ### [🍵 tip me here](https://ko-fi.com/jparkerweb)

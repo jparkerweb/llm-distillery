@@ -1,0 +1,41 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# CI/CD
+.github
+
+# Editor/IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Dependencies
+node_modules
+
+# Environment files
+.env
+.env.*
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files (if you add them later)
+test/
+*.test.js
+coverage/
+
+# Examples (users can reference from GitHub)
+example/
+
+# Misc
+.npmrc
