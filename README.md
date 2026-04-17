@@ -1,4 +1,7 @@
 # 🍶 LLM Distillery
+
+<img src="https://raw.githubusercontent.com/jparkerweb/llm-distillery/refs/heads/main/llm-distillery.jpg" alt="banner">
+
 Use LLMs to distill large texts down to a manageable size by utilizing a map-reduce approach. This ensures that the text fits within a specified token limit, which is crucial when interfacing with Large Language Models (LLMs) in downstreams tasks.
 
 ---
