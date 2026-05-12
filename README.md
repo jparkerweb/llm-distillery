@@ -4,6 +4,14 @@
 
 Use LLMs to distill large texts down to a manageable size by utilizing a map-reduce approach. This ensures that the text fits within a specified token limit, which is crucial when interfacing with Large Language Models (LLMs) in downstreams tasks.
 
+### Maintained by
+<a href="https://www.equilllabs.com">
+  <img src="https://raw.githubusercontent.com/jparkerweb/eQuill-Labs/refs/heads/main/src/static/images/logo-text-outline.png" alt="eQuill Labs" height="40">
+</a>
+
+<br>
+<br>
+
 ---
 
 ## Features
